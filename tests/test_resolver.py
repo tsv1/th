@@ -2,6 +2,7 @@ from unittest.mock import sentinel as s
 
 from pytest import raises
 
+import th
 from th import _, get
 
 
@@ -16,7 +17,7 @@ def test_resolve_nonexisting_class_attribute():
     class User:
         pass
 
-    with raises(AttributeError):
+    with raises(th.AttributeError):
         get(User, _.unknown)
 
 
@@ -51,7 +52,7 @@ def test_resolve_private_instance_attribute():
             self.__name = name
 
     user = User("Bob")
-    with raises(AttributeError):
+    with raises(th.AttributeError):
         get(user, _.__name)
 
 
@@ -60,7 +61,7 @@ def test_resolve_nonexisting_instance_attribute():
         pass
 
     user = User()
-    with raises(AttributeError):
+    with raises(th.AttributeError):
         get(user, _.name)
 
 
@@ -79,7 +80,7 @@ def test_resolve_sequence_index():
 
 def test_resolve_sequence_outside_index():
     numbers = []
-    with raises(IndexError):
+    with raises(th.IndexError):
         get(numbers, _[len(numbers) + 1])
 
 
@@ -94,8 +95,12 @@ def test_resolve_sequence_slice():
 
 def test_resolve_sequence_inappropriate_type():
     numbers = [1, 2, 3]
-    with raises(TypeError):
+    with raises(th.TypeError):
         get(numbers, _["first"])
+
+
+def test_resolve_sequence_inappropriate_type_with_default():
+    assert get([], _["first"], default=s.default) == s.default
 
 
 def test_resolve_mapping_str_key():
@@ -114,7 +119,7 @@ def test_resolve_mapping_int_key():
 
 def test_resolve_mapping_nonexisting_key():
     numbers = {}
-    with raises(KeyError):
+    with raises(th.KeyError):
         get(numbers, _["key"])
 
 

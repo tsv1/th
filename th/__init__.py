@@ -1,57 +1,91 @@
-from typing import Any, Callable, Generator, List, Tuple, Union
+from typing import Any, Union
 
+from ._error import Error
 from ._nil import Nil
+from ._path_holder import PathHolder
+from ._path_holder_proxy import PathHolderProxy
 
 __version__ = "0.0.1"
-__all__ = ("get", "_")
+__all__ = ("get", "_", "PathHolder", "PathHolderProxy",)
+
+_AttributeError = AttributeError
+_IndexError = IndexError
+_KeyError = KeyError
+_TypeError = TypeError
 
 
-PathItem = Tuple[str, Callable[[Any], Any]]
+class AttributeError(Error, _AttributeError):
+    pass
 
 
-class PathHolder:
-    def __init__(self, name: str = "PathHolder()") -> None:
-        self.__name = name
-        self.__path: List[PathItem] = []
-
-    def __iter__(self) -> Generator[PathItem, None, None]:
-        path = self.__name
-        for part, op in self.__path:
-            path += part
-            yield path, op
-
-    def __getattr__(self, name: str) -> "PathHolder":
-        self.__path += [(f".{name}", lambda target: getattr(target, name))]
-        return self
-
-    def __getitem__(self, key: Any) -> "PathHolder":
-        self.__path += [(f"[{key!r}]", lambda target: target[key])]
-        return self
-
-    def __repr__(self) -> str:
-        return self.__name + "".join(r for r, _ in self.__path)
+class IndexError(Error, _AttributeError):
+    pass
 
 
-class PathHolderProxy:
-    def __init__(self, factory: Callable[[], PathHolder]) -> None:
-        self.__factory = factory
-
-    def __getattr__(self, name: str) -> PathHolder:
-        return self.__factory().__getattr__(name)
-
-    def __getitem__(self, key: Any) -> PathHolder:
-        return self.__factory().__getitem__(key)
+class KeyError(Error, _KeyError):
+    pass
 
 
-def get(obj: Any, part: PathHolder, default: Union[Any, Nil] = Nil) -> Any:
+class TypeError(Error, _TypeError):
+    pass
+
+
+def get(obj: Any, path: PathHolder, default: Union[Any, Nil] = Nil) -> Any:
     ptr = obj
-    for part, op in part:  # type: ignore
+    prev = path.__name__
+    for part, operator, operand in path:
         try:
-            ptr = op(ptr)
-        except (KeyError, IndexError, TypeError, AttributeError) as e:
+            ptr = operator(ptr)
+        except _AttributeError as suppressed:
             if default is not Nil:
                 return default
-            raise e
+            prefix = f"{AttributeError.__module__}.{AttributeError.__name__}: "
+            message = "{path}\n{indent}{carets} does not exist".format(
+                path=path,
+                indent=" " * (len(prefix) + len(prev) + 1),
+                carets="^" * len(str(operand)),
+            )
+            raise AttributeError(message, suppressed) from None
+        except _IndexError as suppressed:
+            if default is not Nil:
+                return default
+            prefix = f"{IndexError.__module__}.{IndexError.__name__}: "
+            message = "{path}\n{indent}{carets} out of range".format(
+                path=path,
+                indent=" " * (len(prefix) + len(prev) + 1),
+                carets="^" * len(repr(operand)),
+            )
+            raise IndexError(message, suppressed) from None
+        except _KeyError as suppressed:
+            if default is not Nil:
+                return default
+            prefix = f"{KeyError.__module__}.{KeyError.__name__}: "
+            message = "{path}\n{indent}{carets} does not exist".format(
+                path=path,
+                indent=" " * (len(prefix) + len(prev) + 1),
+                carets="^" * len(repr(operand)),
+            )
+            raise KeyError(message, suppressed) from None
+        except _TypeError as suppressed:
+            if default is not Nil:
+                return default
+            prefix = f"{TypeError.__module__}.{TypeError.__name__}: "
+            if "object is not subscriptable" in str(suppressed):
+                message = "{path}\n{indent}{carets} inappropriate type ({type})".format(
+                    path=path,
+                    indent=" " * len(prefix),
+                    carets=len(repr(operand)) * '^',
+                    type=type(ptr).__name__,
+                )
+            else:
+                message = "{path}\n{indent}{carets} inappropriate type ({type})".format(
+                    path=path,
+                    indent=" " * (len(prefix) + len(prev) + 1),
+                    carets="^" * len(repr(operand)),
+                    type=type(operand).__name__,
+                )
+            raise TypeError(message, suppressed) from None
+        prev = part
     return ptr
 
 
