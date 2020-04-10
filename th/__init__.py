@@ -74,7 +74,7 @@ def get(obj: Any, path: PathHolder, default: Union[Any, Nil] = Nil) -> Any:
                 message = "{path}\n{indent}{carets} inappropriate type ({type})".format(
                     path=path,
                     indent=" " * len(prefix),
-                    carets=len(repr(operand)) * '^',
+                    carets=len(prev) * '^',
                     type=type(ptr).__name__,
                 )
             else:
