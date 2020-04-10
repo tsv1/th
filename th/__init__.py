@@ -1,3 +1,4 @@
+from pprint import pformat
 from typing import Any, Union
 
 from ._error import Error
@@ -30,7 +31,8 @@ class TypeError(Error, _TypeError):
     pass
 
 
-def get(obj: Any, path: PathHolder, default: Union[Any, Nil] = Nil) -> Any:
+def get(obj: Any, path: PathHolder, *,
+        default: Union[Any, Nil] = Nil, verbose: bool = False) -> Any:
     ptr = obj
     prev = path.__name__
     for part, operator, operand in path:
@@ -45,6 +47,8 @@ def get(obj: Any, path: PathHolder, default: Union[Any, Nil] = Nil) -> Any:
                 indent=" " * (len(prefix) + len(prev) + 1),
                 carets="^" * len(str(operand)),
             )
+            if verbose:
+                message += "\nwhere _ is {type}:\n{val}".format(type=type(obj), val=pformat(obj))
             raise AttributeError(message, suppressed) from None
         except _IndexError as suppressed:
             if default is not Nil:
@@ -55,6 +59,8 @@ def get(obj: Any, path: PathHolder, default: Union[Any, Nil] = Nil) -> Any:
                 indent=" " * (len(prefix) + len(prev) + 1),
                 carets="^" * len(repr(operand)),
             )
+            if verbose:
+                message += "\nwhere _ is {type}:\n{val}".format(type=type(obj), val=pformat(obj))
             raise IndexError(message, suppressed) from None
         except _KeyError as suppressed:
             if default is not Nil:
@@ -65,6 +71,8 @@ def get(obj: Any, path: PathHolder, default: Union[Any, Nil] = Nil) -> Any:
                 indent=" " * (len(prefix) + len(prev) + 1),
                 carets="^" * len(repr(operand)),
             )
+            if verbose:
+                message += "\nwhere _ is {type}:\n{val}".format(type=type(obj), val=pformat(obj))
             raise KeyError(message, suppressed) from None
         except _TypeError as suppressed:
             if default is not Nil:
@@ -84,6 +92,8 @@ def get(obj: Any, path: PathHolder, default: Union[Any, Nil] = Nil) -> Any:
                     carets="^" * len(repr(operand)),
                     type=type(operand).__name__,
                 )
+            if verbose:
+                message += "\nwhere _ is {type}:\n{val}".format(type=type(obj), val=pformat(obj))
             raise TypeError(message, suppressed) from None
         prev = part
     return ptr
