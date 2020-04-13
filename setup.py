@@ -13,8 +13,8 @@ def find_dev_required():
 
 setup(
     name="th",
-    version="0.0.2",
-    description="",
+    version="0.0.3",
+    description="Safely accessing deeply nested values",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     author="Nikita Tsvetkov",
@@ -29,5 +29,7 @@ setup(
     classifiers=[
         "License :: OSI Approved :: Apache Software License",
         "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
     ],
 )

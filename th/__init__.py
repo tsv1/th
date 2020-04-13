@@ -6,7 +6,7 @@ from ._nil import Nil
 from ._path_holder import PathHolder
 from ._path_holder_proxy import PathHolderProxy
 
-__version__ = "0.0.2"
+__version__ = "0.0.3"
 __all__ = ("get", "_", "PathHolder", "PathHolderProxy",)
 
 _AttributeError = AttributeError

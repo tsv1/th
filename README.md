@@ -12,7 +12,7 @@ becomes:
 
 ```python
 from th import get, _
-user = get(response, _.body["users"][0]["name"])
+username = get(response, _.body["users"][0]["name"])
 
 th.TypeError: _.body['users'][0]['name']
               ^^^^^^^^^^^^^^^ inappropriate type (NoneType)
@@ -26,14 +26,14 @@ pip3 install th
 
 ## Usage
 
-### Default
+#### Default
 
 ```python
 total = get(response, _.body["total"], default=0)
 # no exception
 ```
 
-### Verbose
+#### Verbose
 
 ```python
 user = get(response.body, _["users"][4]["id"], verbose=True)
