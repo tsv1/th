@@ -21,4 +21,8 @@ jobs:
     - name: Lint
       run: make lint
     - name: Test
-      run: make test
+      run: make coverage
+    - name: Upload coverage
+      uses: codecov/codecov-action@v1
+      with:
+        fail_ci_if_error: true
