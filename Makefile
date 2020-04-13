@@ -1,10 +1,11 @@
 .PHONY: install
 install:
-	python3 -m pip install --quiet --upgrade pip
+	pip3 install --quiet --upgrade pip
 	pip3 install --quiet -r requirements.txt -r requirements-dev.txt
 
 .PHONY: build
 build:
+	pip3 install --quiet --upgrade setuptools wheel twine
 	python3 setup.py sdist bdist_wheel
 
 .PHONY: publish
