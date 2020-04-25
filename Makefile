@@ -49,7 +49,7 @@ test-in-docker:
 all-in-docker:
 	docker run -v `pwd`:/tmp -w /tmp python:$(or $(PYTHON_VERSION),3.6) make all
 
-.PHONY:
+.PHONY: bump
 bump:
 	bump2version $(filter-out $@,$(MAKECMDGOALS))
 	@git --no-pager show HEAD
