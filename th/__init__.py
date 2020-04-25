@@ -5,8 +5,9 @@ from ._error import Error
 from ._nil import Nil
 from ._path_holder import PathHolder
 from ._path_holder_proxy import PathHolderProxy
+from ._version import version
 
-__version__ = "0.1.0"
+__version__ = version
 __all__ = ("get", "_", "PathHolder", "PathHolderProxy",)
 
 _AttributeError = AttributeError
