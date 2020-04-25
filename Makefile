@@ -1,3 +1,5 @@
+PROJECT_NAME=th
+
 .PHONY: install
 install:
 	pip3 install --quiet --upgrade pip
@@ -23,15 +25,15 @@ coverage:
 
 .PHONY: check-types
 check-types:
-	python3 -m mypy th --strict
+	python3 -m mypy ${PROJECT_NAME} --strict
 
 .PHONY: check-imports
 check-imports:
-	python3 -m isort th tests --recursive --check-only
+	python3 -m isort ${PROJECT_NAME} tests --recursive --check-only
 
 .PHONY: check-style
 check-style:
-	python3 -m flake8 th tests
+	python3 -m flake8 ${PROJECT_NAME} tests
 
 .PHONY: lint
 lint: check-types check-style check-imports
