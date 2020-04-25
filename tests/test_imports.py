@@ -14,5 +14,9 @@ def test_import_errors():
     from th import AttributeError, IndexError, KeyError, TypeError  # noqa: F401
 
 
+def test_import_hold():
+    from th import hold  # noqa: F401
+
+
 def test_import_():
     from th import _  # noqa: F401

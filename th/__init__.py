@@ -100,4 +100,4 @@ def get(obj: Any, path: PathHolder, *,
     return ptr
 
 
-_ = PathHolderProxy(lambda: PathHolder("_"))
+_ = hold = PathHolderProxy(lambda: PathHolder("_"))
