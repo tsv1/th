@@ -13,7 +13,7 @@ def find_dev_required():
 
 setup(
     name="th",
-    version="0.1.0",
+    version="0.1.1",
     description="Safely accessing deeply nested values",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
