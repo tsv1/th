@@ -1,8 +1,9 @@
 from pprint import pformat
 from typing import Any, Union
 
+from niltype import Nil, NilType
+
 from ._error import Error
-from ._nil import Nil
 from ._path_holder import PathHolder
 from ._path_holder_proxy import PathHolderProxy
 from ._version import version
@@ -33,7 +34,7 @@ class TypeError(Error, _TypeError):
 
 
 def get(obj: Any, path: PathHolder, *,
-        default: Union[Any, Nil] = Nil, verbose: bool = False) -> Any:
+        default: Union[Any, NilType] = Nil, verbose: bool = False) -> Any:
     ptr = obj
     prev = path.__name__
     for part, operator, operand in path:
