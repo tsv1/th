@@ -21,10 +21,9 @@ setup(
     author_email="nikitanovosibirsk@yandex.com",
     python_requires=">=3.6.0",
     url="https://github.com/nikitanovosibirsk/th",
-    license="Apache 2",
+    license="Apache-2.0",
     packages=find_packages(exclude=("tests",)),
     install_requires=find_required(),
-    setup_requires=["pytest-runner"],
     tests_require=find_dev_required(),
     classifiers=[
         "License :: OSI Approved :: Apache Software License",
