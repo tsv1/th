@@ -32,3 +32,10 @@ def test_holder_repr_custom():
 def test_holder_repr_nested():
     nested = _.items[0]["id"]
     assert repr(nested) == "_.items[0]['id']"
+
+
+def test_holder_eq():
+    assert _ == _
+    assert _.items[0].name == _.items[0].name
+    assert _.items[0].name != _.items[0].name1
+    assert _.items[0].name != _.items[1].name
