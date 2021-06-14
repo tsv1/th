@@ -1,3 +1,5 @@
+from copy import copy, deepcopy
+
 from th import _
 
 
@@ -39,3 +41,35 @@ def test_holder_eq():
     assert _.items[0].name == _.items[0].name
     assert _.items[0].name != _.items[0].name1
     assert _.items[0].name != _.items[1].name
+
+
+def test_holder_copy():
+    holder1 = _.items[0].name
+    holder2 = copy(holder1)
+
+    assert holder1 == holder2
+    assert id(holder1) != id(holder2)
+
+
+def test_holder_copy_and_update():
+    holder1 = _.items[0]
+    holder2 = copy(holder1).name
+
+    assert holder1 == holder2 == _.items[0].name
+
+
+def test_holder_deepcopy():
+    holder1 = _.items[0].name
+    holder2 = deepcopy(holder1)
+
+    assert holder1 == holder2
+    assert id(holder1) != id(holder2)
+
+
+def test_holder_deepcopy_and_update():
+    holder1 = _.items[0]
+    holder2 = deepcopy(holder1).name
+
+    assert holder1 != holder2
+    assert holder1 == _.items[0]
+    assert holder2 == _.items[0].name

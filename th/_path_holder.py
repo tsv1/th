@@ -1,4 +1,7 @@
-from typing import Any, Generator, List
+from copy import deepcopy
+from typing import Any, Dict, Generator, List, Optional
+
+from niltype import Nil, Nilable
 
 from .operators import AttrAccessor, ItemAccessor, Operator
 
@@ -6,9 +9,9 @@ __all__ = ("PathHolder",)
 
 
 class PathHolder:
-    def __init__(self, name: str = "PathHolder()") -> None:
+    def __init__(self, name: str = "PathHolder()", path: Nilable[List[Operator]] = Nil) -> None:
         self.__name = self.__name__ = name
-        self.__path: List[Operator] = []
+        self.__path: List[Operator] = path if (path is not Nil) else []
 
     def __iter__(self) -> Generator[Operator, None, None]:
         for operator in self.__path:
@@ -27,3 +30,9 @@ class PathHolder:
 
     def __eq__(self, other: Any) -> bool:
         return isinstance(self, other.__class__) and (self.__dict__ == other.__dict__)
+
+    def __copy__(self) -> "PathHolder":
+        return self.__class__(self.__name, self.__path)
+
+    def __deepcopy__(self, memo: Optional[Dict[Any, Any]] = None) -> "PathHolder":
+        return self.__class__(self.__name, [deepcopy(x, memo) for x in self.__path])
