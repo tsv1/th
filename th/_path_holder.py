@@ -36,3 +36,6 @@ class PathHolder:
 
     def __deepcopy__(self, memo: Optional[Dict[Any, Any]] = None) -> "PathHolder":
         return self.__class__(self.__name, [deepcopy(x, memo) for x in self.__path])
+
+    def __len__(self) -> int:
+        return len(self.__path)

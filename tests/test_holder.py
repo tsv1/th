@@ -73,3 +73,9 @@ def test_holder_deepcopy_and_update():
     assert holder1 != holder2
     assert holder1 == _.items[0]
     assert holder2 == _.items[0].name
+
+
+def test_holder_len():
+    holder = _.items[0].name
+
+    assert len(holder) == 3
