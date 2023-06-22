@@ -22,7 +22,7 @@ setup(
     python_requires=">=3.7",
     url="https://github.com/tsv1/th",
     license="Apache-2.0",
-    packages=find_packages(exclude=["tests", "tests.*"])
+    packages=find_packages(exclude=["tests", "tests.*"]),
     package_data={"th": ["py.typed"]},
     install_requires=find_required(),
     tests_require=find_dev_required(),
