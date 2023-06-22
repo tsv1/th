@@ -1,6 +1,6 @@
 # th
 
-[![Codecov](https://img.shields.io/codecov/c/github/nikitanovosibirsk/th/master.svg?style=flat-square)](https://codecov.io/gh/nikitanovosibirsk/th)
+[![Codecov](https://img.shields.io/codecov/c/github/tsv1/th/master.svg?style=flat-square)](https://codecov.io/gh/tsv1/th)
 [![PyPI](https://img.shields.io/pypi/v/th.svg?style=flat-square)](https://pypi.python.org/pypi/th/)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/th?style=flat-square)](https://pypi.python.org/pypi/th/)
 [![Python Version](https://img.shields.io/pypi/pyversions/th.svg?style=flat-square)](https://pypi.python.org/pypi/th/)
