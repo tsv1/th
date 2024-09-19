@@ -18,23 +18,54 @@ _TypeError = TypeError
 
 
 class AttributeError(Error, _AttributeError):
+    """
+    Represents an AttributeError wrapped in a custom Error class.
+    """
     pass
 
 
 class IndexError(Error, _AttributeError):
+    """
+    Represents an IndexError wrapped in a custom Error class.
+    """
     pass
 
 
 class KeyError(Error, _KeyError):
+    """
+    Represents a KeyError wrapped in a custom Error class.
+    """
     pass
 
 
 class TypeError(Error, _TypeError):
+    """
+    Represents a TypeError wrapped in a custom Error class.
+    """
     pass
 
 
 def get(obj: Any, path: PathHolder, *,
         default: Union[Any, NilType] = Nil, verbose: bool = False) -> Any:
+    """
+    Retrieve the value at a given path from the target object.
+
+    This function attempts to traverse the given `path` on the `obj`. If any attribute,
+    key, or index does not exist, and a `default` value is provided, the default value 
+    will be returned. If no default is provided, a custom error (AttributeError, IndexError,
+    KeyError, or TypeError) is raised with additional path information.
+
+    :param obj: The target object from which to retrieve the value.
+    :param path: A PathHolder representing the series of accessors (attributes or items).
+    :param default: The default value to return if the path is not valid. Default is `Nil`.
+    :param verbose: If True, additional debug information will be included in the error message.
+    :return: The value retrieved from the object at the specified path.
+    :raises AttributeError: If an attribute in the path does not exist and no default is provided.
+    :raises IndexError: If an index in the path is out of range and no default is provided.
+    :raises KeyError: If a key in the path does not exist and no default is provided.
+    :raises TypeError: If an operation in the path is inappropriate for the object type and 
+                       no default is provided.
+    """
     ptr = obj
     prev = path.__name__
     for operator in path:
