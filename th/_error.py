@@ -6,7 +6,7 @@ class Error(Exception):
     Represents a custom error with support for suppressed exceptions.
 
     This class extends the base `Exception` class and allows for an additional
-    suppressed exception to be passed, which can be useful for wrapping and 
+    suppressed exception to be passed, which can be useful for wrapping and
     re-raising exceptions while retaining the original error.
     """
 

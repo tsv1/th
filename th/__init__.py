@@ -51,7 +51,7 @@ def get(obj: Any, path: PathHolder, *,
     Retrieve the value at a given path from the target object.
 
     This function attempts to traverse the given `path` on the `obj`. If any attribute,
-    key, or index does not exist, and a `default` value is provided, the default value 
+    key, or index does not exist, and a `default` value is provided, the default value
     will be returned. If no default is provided, a custom error (AttributeError, IndexError,
     KeyError, or TypeError) is raised with additional path information.
 
@@ -63,7 +63,7 @@ def get(obj: Any, path: PathHolder, *,
     :raises AttributeError: If an attribute in the path does not exist and no default is provided.
     :raises IndexError: If an index in the path is out of range and no default is provided.
     :raises KeyError: If a key in the path does not exist and no default is provided.
-    :raises TypeError: If an operation in the path is inappropriate for the object type and 
+    :raises TypeError: If an operation in the path is inappropriate for the object type and
                        no default is provided.
     """
     ptr = obj
