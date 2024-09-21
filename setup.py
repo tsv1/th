@@ -14,7 +14,7 @@ def find_dev_required():
 setup(
     name="th",
     version="0.4.0",
-    description="Safely accessing deeply nested values",
+    description="Safely access deeply nested values with clear error messages",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     author="Nikita Tsvetkov",
