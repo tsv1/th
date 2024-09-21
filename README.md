@@ -1,85 +1,73 @@
-# th
+# `th`
 
 [![Codecov](https://img.shields.io/codecov/c/github/tsv1/th/master.svg?style=flat-square)](https://codecov.io/gh/tsv1/th)
 [![PyPI](https://img.shields.io/pypi/v/th.svg?style=flat-square)](https://pypi.python.org/pypi/th/)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/th?style=flat-square)](https://pypi.python.org/pypi/th/)
 [![Python Version](https://img.shields.io/pypi/pyversions/th.svg?style=flat-square)](https://pypi.python.org/pypi/th/)
 
-## Overview
+## Introduction
 
-```python
-username = response.body["users"][0]["name"]
+`th` is a Python library that provides a convenient way to access nested attributes and items in complex data structures, with clear and informative error messages when something goes wrong.
 
-TypeError: 'NoneType' object is not subscriptable
-```
+When working with deeply nested data structures like JSON responses or complex objects, accessing nested attributes or items can lead to confusing and uninformative error messages when a part of the path doesn't exist or is of the wrong type.
 
-becomes:
-
-```python
-from th import get, _
-username = get(response, _.body["users"][0]["name"])
-
-th.TypeError: _.body['users'][0]['name']
-              ^^^^^^^^^^^^^^^ inappropriate type (NoneType)
-```
+`th` simplifies this by allowing you to specify the path using a special path holder object `_`, and provides detailed error messages indicating exactly where the problem occurred.
 
 ## Installation
 
+You can install `th` using pip:
+
 ```sh
-pip3 install th
+pip install th
 ```
 
 ## Usage
 
-#### Default
+### Basic Usage
+
+Suppose you have a complex `response` object and you want to access a nested value:
 
 ```python
-total = get(response, _.body["total"], default=0)
-# no exception
+username = response.body["users"][0]["name"]
 ```
 
-#### Verbose
+If any part of this path doesn't exist or is `None`, you might get a `TypeError` or `AttributeError` with a less-than-helpful message.
+
+With `th`, you can do:
 
 ```python
-user = get(response.body, _["users"][4]["id"], verbose=True)
+from th import get, _
 
-th.IndexError: _['users'][4]['id']
-                          ^ out of range
-where _ is <class 'dict'>:
-{'users': [{'id': 1, 'name': 'Bob'},
-           {'id': 2, 'name': 'Alice'},
-           {'id': 3, 'name': 'Eve'}]}
+username = get(response, _.body["users"][0]["name"])
 ```
 
-## Examples
+If everything goes well, `username` will be set to the desired value. If there's an error, `th` will raise an informative exception showing exactly where the problem occurred in the path.
+
+### Providing a Default Value
+
+If you want to provide a default value in case the path doesn't exist or is of the wrong type, you can use the `default` parameter:
 
 ```python
-AttributeError: 'Response' object has no attribute 'body'
-# ->
-th.AttributeError: _.body['users'][0]['name']
-                     ^^^^ does not exist
+username = get(response, _.body["users"][0]["name"], default="Unknown")
 ```
+
+If one of the parts of the path doesn't exist or is of the wrong type, `username` will be set to "Unknown".
+
+### Verbose Mode
+
+If you need more detailed information about the error, you can enable verbose mode:
+
 ```python
-IndexError: list index out of range
-# ->
-th.IndexError: _.body['users'][0]['name']
-                               ^ out of range
+username = get(response, _.body["users"][0]["name"], verbose=True)
 ```
-```python
-KeyError: 'users'
-# ->
-th.KeyError: _.body['users'][0]['name']
-                    ^^^^^^^ does not exist
+
+Suppose `response.body["users"]` is `None`, you would get an error message like:
+
 ```
-```python
-TypeError: list indices must be integers or slices, not NoneType
-# -> 
-th.TypeError: _.body['users'][None]['name']
-                              ^^^^ inappropriate type (NoneType)
-```
-```python
-TypeError: 'NoneType' object is not subscriptable
-# ->
 th.TypeError: _.body['users'][0]['name']
               ^^^^^^^^^^^^^^^ inappropriate type (NoneType)
+where _ is <class 'Response'>:
+Response({'total': 3, 'users': None})
 ```
+
+This includes additional debug information in the error message, such as the type and value of the object at the point of failure.
