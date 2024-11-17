@@ -57,4 +57,9 @@ class ItemAccessor(Operator):
 
         :return: A string representing the item access, e.g., '[key]'.
         """
+        if isinstance(self._operand, slice):
+            start = self._operand.start if self._operand.start is not None else ""
+            stop = self._operand.stop if self._operand.stop is not None else ""
+            step = self._operand.step if self._operand.step is not None else ""
+            return f"[{start}:{stop}:{step}]"
         return f"[{self._operand!r}]"
