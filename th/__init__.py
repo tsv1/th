@@ -6,6 +6,7 @@ from niltype import Nil, NilType
 from ._error import Error
 from ._path_holder import PathHolder
 from ._path_holder_proxy import PathHolderProxy
+from ._utils import get_carets, get_indent, get_type_name
 from ._version import version
 
 __version__ = version
@@ -74,59 +75,48 @@ def get(obj: Any, path: PathHolder, *,
         except _AttributeError as suppressed:
             if default is not Nil:
                 return default
-            prefix = f"{AttributeError.__module__}.{AttributeError.__name__}: "
-            message = "{path}\n{indent}{carets} does not exist".format(
-                path=path,
-                indent=" " * (len(prefix) + len(prev) + 1),
-                carets="^" * len(str(operator.operand)),
-            )
+            indent = get_indent(AttributeError, prev)
+            carets = get_carets(operator.operand, repr=str)
+            message = f"{path}\n{indent}{carets} does not exist"
             if verbose:
-                message += "\nwhere _ is {type}:\n{val}".format(type=type(obj), val=pformat(obj))
+                message += f"\nwhere _ is {type(obj)}:\n{pformat(obj)}"
             raise AttributeError(message, suppressed) from None
+
         except _IndexError as suppressed:
             if default is not Nil:
                 return default
-            prefix = f"{IndexError.__module__}.{IndexError.__name__}: "
-            message = "{path}\n{indent}{carets} out of range".format(
-                path=path,
-                indent=" " * (len(prefix) + len(prev) + 1),
-                carets="^" * len(repr(operator.operand)),
-            )
+            indent = get_indent(IndexError, prev)
+            carets = get_carets(operator.operand)
+            message = f"{path}\n{indent}{carets} out of range"
             if verbose:
-                message += "\nwhere _ is {type}:\n{val}".format(type=type(obj), val=pformat(obj))
+                message += f"\nwhere _ is {type(obj)}:\n{pformat(obj)}"
             raise IndexError(message, suppressed) from None
+
         except _KeyError as suppressed:
             if default is not Nil:
                 return default
-            prefix = f"{KeyError.__module__}.{KeyError.__name__}: "
-            message = "{path}\n{indent}{carets} does not exist".format(
-                path=path,
-                indent=" " * (len(prefix) + len(prev) + 1),
-                carets="^" * len(repr(operator.operand)),
-            )
+            indent = get_indent(KeyError, prev)
+            carets = get_carets(operator.operand)
+            message = f"{path}\n{indent}{carets} does not exist"
             if verbose:
-                message += "\nwhere _ is {type}:\n{val}".format(type=type(obj), val=pformat(obj))
+                message += f"\nwhere _ is {type(obj)}:\n{pformat(obj)}"
             raise KeyError(message, suppressed) from None
+
         except _TypeError as suppressed:
             if default is not Nil:
                 return default
-            prefix = f"{TypeError.__module__}.{TypeError.__name__}: "
             if "object is not subscriptable" in str(suppressed):
-                message = "{path}\n{indent}{carets} inappropriate type ({type})".format(
-                    path=path,
-                    indent=" " * len(prefix),
-                    carets=len(prev) * '^',
-                    type=type(ptr).__name__,
-                )
+                indent = get_indent(TypeError)
+                carets = get_carets(prev, repr=str)
+                type_name = get_type_name(ptr)
+                message = f"{path}\n{indent}{carets} inappropriate type ({type_name})"
             else:
-                message = "{path}\n{indent}{carets} inappropriate type ({type})".format(
-                    path=path,
-                    indent=" " * (len(prefix) + len(prev) + 1),
-                    carets="^" * len(repr(operator.operand)),
-                    type=type(operator.operand).__name__,
-                )
+                indent = get_indent(TypeError, prev)
+                carets = get_carets(operator.operand)
+                type_name = get_type_name(operator.operand)
+                message = f"{path}\n{indent}{carets} inappropriate type ({type_name})"
             if verbose:
-                message += "\nwhere _ is {type}:\n{val}".format(type=type(obj), val=pformat(obj))
+                message += f"\nwhere _ is {type(obj)}:\n{pformat(obj)}"
             raise TypeError(message, suppressed) from None
         prev += str(operator)
     return ptr
