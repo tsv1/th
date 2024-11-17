@@ -8,6 +8,7 @@ from ._path_holder import PathHolder
 from ._path_holder_proxy import PathHolderProxy
 from ._utils import get_carets, get_indent, get_type_name
 from ._version import version
+from .operators import ItemAccessor
 
 __version__ = version
 __all__ = ("get", "_", "PathHolder", "PathHolderProxy",)
@@ -69,9 +70,14 @@ def get(obj: Any, path: PathHolder, *,
     """
     ptr = obj
     prev = path.__name__
+    is_prev_slice = False
+
     for operator in path:
         try:
-            ptr = operator(ptr)
+            if is_prev_slice:
+                ptr = [operator(item) for item in ptr]
+            else:
+                ptr = operator(ptr)
         except _AttributeError as suppressed:
             if default is not Nil:
                 return default
@@ -119,6 +125,7 @@ def get(obj: Any, path: PathHolder, *,
                 message += f"\nwhere _ is {type(obj)}:\n{pformat(obj)}"
             raise TypeError(message, suppressed) from None
         prev += str(operator)
+        is_prev_slice = isinstance(operator, ItemAccessor) and isinstance(operator.operand, slice)
     return ptr
 
 
